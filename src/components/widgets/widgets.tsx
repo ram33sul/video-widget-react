@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useApi from '../../custom_hooks/api';
 import Movie from '../../interfaces/Movie';
 import styles from './widgets.module.css';
@@ -17,7 +17,7 @@ export default function Widgets(){
         let count = 0;
         movies?.forEach((movie) => {
             if(count === pageSize){
-                data.push(<Widget movies={moviesData} />)
+                data.push(<Widget key={movie.id} movies={moviesData} />)
                 moviesData = [];
                 count = 0;
             }
@@ -25,24 +25,28 @@ export default function Widgets(){
             count++;
         })
         if(count !== 0){
-            data.push(<Widget movies={moviesData} />)
+            data.push(<Widget key={movies?.[movies.length - 1].id} movies={moviesData} />)
         }
         return data;
     },[movies])
 
     const handleForward = () => {
         if(wrapperRef.current) {
-            const itemWidth = wrapperRef.current.scrollWidth;
+            const itemWidth = wrapperRef.current.scrollWidth / ((movies?.length ?? 40) / pageSize);
             setPage((prevPage) => prevPage + 1);
-            wrapperRef.current.scrollLeft = (page + 1) * itemWidth;
+            wrapperRef.current.scrollTo({
+                left: (page + 1) * itemWidth,
+            })
           }
     }
 
     const handleBackward = () => {
         if(page > 0 && wrapperRef.current) {
-            const itemWidth = wrapperRef.current.scrollWidth;
+            const itemWidth = wrapperRef.current.scrollWidth / ((movies?.length ?? 40) / pageSize);
             setPage((prevPage) => prevPage - 1);
-            wrapperRef.current.scrollLeft = (page - 1) * itemWidth;
+            wrapperRef.current.scrollTo({
+                left: (page - 1) * itemWidth,
+            })
           }
     }
 

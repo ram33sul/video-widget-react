@@ -14,7 +14,7 @@ export default function Widget({ movies }: WidgetProps){
         <div className={styles.container}>
             {
                 movies?.map((movie) => {
-                    return <Card {...movie} style={{width: match ? '50%' : '20%'}} />
+                    return <Card {...movie} key={movie.id} style={{width: match ? '50%' : '20%'}} />
                 })
             }
         </div>
